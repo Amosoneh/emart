@@ -45,6 +45,7 @@ class CustomerServiceImplTest {
 
     CustomerRegisterRequest request;
     CreateProductRequest createProductRequest;
+    CreateProductRequest createProductRequest2;
 
     CreateStoreRequest createStoreRequest;
     @BeforeEach
@@ -59,7 +60,7 @@ class CustomerServiceImplTest {
         var res = customerRepository.findCustomerByEmail(request.getEmail());
         log.info("result {}", res);
         assertThat(customer).isNotNull();
-        assertThat(customer.contains("User registration successfully")).isTrue();
+        assertThat(customer.getName()).isEqualTo(request.getName());
     }
 
     @Test
@@ -68,7 +69,7 @@ class CustomerServiceImplTest {
         var customer = customerService.register(request);
         var token = customerService.login(request.getEmail(), request.getPassword());
         assertThat(customer).isNotNull();
-        assertThat(customer.contains("User registration successfully")).isTrue();
+        assertThat(customer.getName()).isEqualTo(request.getName());
         assertThat(token).isNotNull();
         assertThat(token.containsKey("token")).isTrue();
         assertThat(token.get("token")).isNotNull();
@@ -105,7 +106,7 @@ class CustomerServiceImplTest {
         var count = productRepository.count();
         assertThat(count).isGreaterThanOrEqualTo(1);
         assertThat(product).isNotNull();
-        assertThat(product.contains("Product created successfully")).isTrue();
+        assertThat(product.getId()).isNotNull();
     }
 
     @Test
@@ -124,8 +125,8 @@ class CustomerServiceImplTest {
 
         createProductRequest = CreateProductRequest.builder().description("description").name("Car name").userId(customer.getId())
                 .quantities(3).price(200L).build();
-         productService.createProduct(createProductRequest);
-        var product = productRepository.findProductByName("Car name");
+        var product = productService.createProduct(createProductRequest);
+//         = productRepository.findProductByName("Car name");
         log.info("product {}", product);
 
         var re = cartService.addProductToCart(product.getId(), customer.getId());
@@ -145,8 +146,8 @@ class CustomerServiceImplTest {
         storeRepository.findStoreByUserId(customer.getId());
         createProductRequest = CreateProductRequest.builder().description("description").name("Car name").userId(customer.getId())
                 .quantities(3).price(200L).build();
-        productService.createProduct(createProductRequest);
-        var product = productRepository.findProductByName("product name");
+        var product = productService.createProduct(createProductRequest);
+//        var product = productRepository.findProductByName("Car name");
         log.info("product {}", product);
         var re = cartService.addProductToCart(product.getId(), customer.getId());
         OrderRequest orderRequest = OrderRequest.builder().customerId(customer.getId())
@@ -156,6 +157,36 @@ class CustomerServiceImplTest {
         assertThat(response.getOrderId()).isNotNull();
         assertThat(response.getAuthorization_url()).isNotNull();
         assertThat(response.getAccess_code()).isNotNull();
+    }
+
+    @Test
+    void testTo_searchProduct() throws EmailAlreadyExistException, UserNotFoundException {
+        CustomerRegisterRequest request = buildCustomerRegisterRequest();
+        customerService.register(request);
+        var customer = customerRepository.findCustomerByEmail(request.getEmail());
+        log.info("customer {}", customer.getEmail());
+        customerRepository.findCustomerByEmail(request.getEmail());
+        createStoreRequest = CreateStoreRequest.builder().description("description").name("Amos Monday")
+                .userId(customer.getId()).build();
+        storeService.createStore(createStoreRequest);
+        var store = storeRepository.findStoreByUserId(customer.getId());
+        log.info("result {}", store.getId());
+        createProductRequest = CreateProductRequest.builder().description("description").name("product name")
+                .price(400L).quantities(3).userId(customer.getId()).build();
+        var product = productService.createProduct(createProductRequest);
+        var count = productRepository.count();
+        createProductRequest2 = CreateProductRequest.builder().price(90L).quantities(5).userId(customer.getId())
+                .name("Car name").build();
+        var product2 = productService.createProduct(createProductRequest2);
+        var products = productService.searchProducts("product");
+        log.info("products {}", products);
+        assertThat(count).isGreaterThanOrEqualTo(1);
+        assertThat(product).isNotNull();
+        assertThat(product2).isNotNull();
+        assertThat(product.getName()).containsIgnoringCase("product");
+        assertThat(product2.getName()).containsIgnoringCase("Car");
+        assertThat(products).isNotNull();
+        assertThat(products.size()).isGreaterThan(1);
     }
 
 

@@ -27,7 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
     private final CartRepository cartRepository;
 
     @Override
-    public String register(CustomerRegisterRequest request) throws EmailAlreadyExistException {
+    public Customer register(CustomerRegisterRequest request) throws EmailAlreadyExistException {
         boolean anyMatch = customerRepository.findAll().stream().anyMatch(user -> user.getEmail().equals(request.getEmail()));
         if(anyMatch){
             throw new EmailAlreadyExistException("User already exists");
@@ -38,8 +38,11 @@ public class CustomerServiceImpl implements CustomerService {
         String encodedPassword = passwordEncoder.encode(request.getPassword());
         customer.setPassword(encodedPassword);
         customer.setCart(cartRepository.save(new Cart()));
-        customerRepository.save(customer);
-        return "User registration successfully";
+        if(request.getAccountType() != null && request.getAccountType().equalsIgnoreCase(Role.SELLER.name())){
+            customer.setRole(Role.SELLER);
+        }else customer.setRole(Role.BUYER);
+        customer = customerRepository.save(customer);
+        return customer;
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.emart.emart.controllers;
 
-import com.emart.emart.datas.dtos.request.CreateProductRequest;
-import com.emart.emart.datas.dtos.request.CreateStoreRequest;
-import com.emart.emart.datas.dtos.request.CustomerRegisterRequest;
-import com.emart.emart.datas.dtos.request.OrderRequest;
+import com.emart.emart.datas.dtos.request.*;
 import com.emart.emart.datas.dtos.response.OrderResponse;
 import com.emart.emart.exceptions.EmailAlreadyExistException;
 import com.emart.emart.exceptions.ProductNotFoundException;
@@ -28,8 +25,8 @@ public class AppController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<?> login(String email, String password) throws UserNotFoundException {
-        return ResponseEntity.ok(customerService.login(email, password));
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) throws UserNotFoundException {
+        return ResponseEntity.ok(customerService.login(request.getEmail(), request.getPassword()));
     }
 
     @PostMapping("/store/create-store")
@@ -65,6 +62,11 @@ public class AppController {
     @PostMapping("/order/payment/confirm/{reference}")
     public ResponseEntity<?> verifyOrder(@PathVariable String reference) throws Exception {
         return ResponseEntity.ok(orderService.verifyPayment(reference));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?>searchProduct(@RequestParam String keyword){
+        return ResponseEntity.ok(productService.searchProducts(keyword));
     }
 }
 

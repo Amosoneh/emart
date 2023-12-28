@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @Data @Builder @AllArgsConstructor
 @NoArgsConstructor
 public class CreateStoreRequest {
-    private Long id;
     private Long userId;
     private String name;
     private String description;

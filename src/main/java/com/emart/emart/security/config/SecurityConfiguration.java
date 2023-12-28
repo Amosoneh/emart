@@ -27,9 +27,9 @@ public class SecurityConfiguration {
                 .cors(AbstractHttpConfigurer::disable)
                 .securityMatcher("/api/**")
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("api/register", "/api/login", "/product/get-all-products",
+                        .requestMatchers("api/register", "/api/login", "api/product/get-all-products",
                                 "/api/product/get-all-products/{productId}", "api/cart/add-to-cart").permitAll()
-                        .requestMatchers("/api/store/create-store", "api/product/create-product").hasRole("SELLER")
+                        .requestMatchers("/api/store/create-store", "api/product/create-product").hasAuthority("SELLER")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

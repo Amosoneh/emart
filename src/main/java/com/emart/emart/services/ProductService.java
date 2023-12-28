@@ -8,8 +8,10 @@ import com.emart.emart.exceptions.UserNotFoundException;
 import java.util.List;
 
 public interface ProductService {
-    String createProduct(CreateProductRequest request) throws UserNotFoundException;
+    Product createProduct(CreateProductRequest request) throws UserNotFoundException;
     void deleteProduct(Long productId) throws ProductNotFoundException;
     Product getProduct(Long productId) throws ProductNotFoundException;
     List<Product> getAllProducts();
+
+    List<Product> searchProducts(String keyword);
 }
