@@ -6,6 +6,7 @@ import com.emart.emart.exceptions.ProductNotFoundException;
 import com.emart.emart.exceptions.UserNotFoundException;
 import com.emart.emart.repositories.CartRepository;
 import com.emart.emart.repositories.CustomerRepository;
+import com.emart.emart.repositories.OrderItemRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,10 @@ public class CartServiceImpl implements CartService {
     private final CustomerServiceImpl customerService;
     private final ProductService productService;
 
+    private final OrderItemRepository orderItemRepository;
     private final CustomerRepository customerRepository;
     @Override
-    public String addProductToCart(Long productId, Long userId) throws UserNotFoundException, ProductNotFoundException {
+    public String addProductToCart(String productId, String userId) throws UserNotFoundException, ProductNotFoundException {
         var customer = customerRepository.findCustomerById(userId);
         if(customer == null) throw new UserNotFoundException("User not found");
         log.info("Customer: {}", customer.toString());
@@ -26,6 +28,7 @@ public class CartServiceImpl implements CartService {
         var cart = customer.getCart();
         OrderItem item = OrderItem.builder().product(product).quantity(1).build();
         cart.getItems().add(item);
+        orderItemRepository.save(item);
         cartRepository.save(updateCartSubTotal(cart));
         return "Product added to cart successfully";
     }

@@ -3,9 +3,6 @@ package com.emart.emart.services;
 import com.emart.emart.datas.dtos.request.CreateProductRequest;
 import com.emart.emart.datas.dtos.request.CreateStoreRequest;
 import com.emart.emart.datas.dtos.request.CustomerRegisterRequest;
-import com.emart.emart.datas.dtos.request.OrderRequest;
-import com.emart.emart.datas.dtos.response.OrderResponse;
-import com.emart.emart.datas.models.Customer;
 import com.emart.emart.exceptions.EmailAlreadyExistException;
 import com.emart.emart.exceptions.ProductNotFoundException;
 import com.emart.emart.exceptions.UserNotFoundException;
@@ -19,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+
 @Slf4j @SpringBootTest
 class CustomerServiceImplTest {
     @Autowired
@@ -150,9 +147,7 @@ class CustomerServiceImplTest {
 //        var product = productRepository.findProductByName("Car name");
         log.info("product {}", product);
         var re = cartService.addProductToCart(product.getId(), customer.getId());
-        OrderRequest orderRequest = OrderRequest.builder().customerId(customer.getId())
-                .cartId(customer.getCart().getId()).totalAmount(customer.getCart().getSubTotal()).build();
-        var response = orderService.makeOrder(orderRequest);
+        var response = orderService.makeOrder(customer.getId());
         assertThat(response).isNotNull();
         assertThat(response.getOrderId()).isNotNull();
         assertThat(response.getAuthorization_url()).isNotNull();

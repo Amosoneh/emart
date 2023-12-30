@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface ProductService {
     Product createProduct(CreateProductRequest request) throws UserNotFoundException;
-    void deleteProduct(Long productId) throws ProductNotFoundException;
-    Product getProduct(Long productId) throws ProductNotFoundException;
+    void deleteProduct(String productId) throws ProductNotFoundException;
+    Product getProduct(String productId) throws ProductNotFoundException;
     List<Product> getAllProducts();
 
     List<Product> searchProducts(String keyword);

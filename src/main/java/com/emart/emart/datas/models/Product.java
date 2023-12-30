@@ -2,6 +2,7 @@ package com.emart.emart.datas.models;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
@@ -14,8 +15,8 @@ import java.math.BigDecimal;
 @Document(indexName = "products")
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    @UuidGenerator
+    private String id;
 
     @Field(type = FieldType.Keyword)
     private String name;

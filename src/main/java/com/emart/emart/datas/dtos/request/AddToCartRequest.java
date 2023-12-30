@@ -5,10 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data @Builder @AllArgsConstructor
+@Data
+@Builder @AllArgsConstructor
 @NoArgsConstructor
-public class CreateStoreRequest {
+public class AddToCartRequest {
+    private String productId;
     private String userId;
-    private String name;
-    private String description;
 }

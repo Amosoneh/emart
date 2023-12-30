@@ -16,13 +16,13 @@ public class StoreServiceImp implements StoreService {
     private final CustomerRepository customerRepository;
     @Override
     public Store createStore(CreateStoreRequest request) throws UserNotFoundException {
-        var customer = customerRepository.findCustomerById(request.getUserId());
-        if(customer == null){
+//        var customer = customerRepository.findCustomerById(request.getUserId());
+        var anyMatch = customerRepository.existsById(request.getUserId());
+        if(!anyMatch){
             throw new UserNotFoundException("User not found");
         }
         var store = modelMapper.map(request, Store.class);
-        store.setUserId(customer.getId());
-         store = storeRepository.save(store);
-        return store;
+//        store.setUserId(customer.getId());
+        return storeRepository.save(store);
     }
 }

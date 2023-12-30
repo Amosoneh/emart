@@ -4,5 +4,5 @@ import com.emart.emart.exceptions.ProductNotFoundException;
 import com.emart.emart.exceptions.UserNotFoundException;
 
 public interface CartService {
-    String addProductToCart(Long productId, Long userId) throws UserNotFoundException, ProductNotFoundException;
+    String addProductToCart(String productId, String userId) throws UserNotFoundException, ProductNotFoundException;
 }

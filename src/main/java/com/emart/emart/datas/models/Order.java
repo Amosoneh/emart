@@ -18,7 +18,7 @@ public class Order {
     private String id;
     private String orderedBy;
     private BigDecimal totalAmount;
-    private Long cartId;
+    private String cartId;
     private LocalDateTime orderedAt;
     private String status;
     private String referenceCode;

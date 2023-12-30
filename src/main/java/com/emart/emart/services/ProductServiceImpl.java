@@ -26,30 +26,33 @@ public class ProductServiceImpl implements ProductService {
     private final ElasticSearchQueryService elasticSearchQueryService;
     @Override
     public Product createProduct(CreateProductRequest request) throws UserNotFoundException {
-        var customer = customerRepository.findCustomerById(request.getUserId());
-        if(customer == null){
-            throw new UserNotFoundException("User not found");
-        }
-        var customerStore = storeRepository.findStoreByUserId(customer.getId());
+//        var customer = customerRepository.findCustomerById(request.getUserId());
+//        if(customer == null){
+//            throw new UserNotFoundException("User not found");
+//        }
+        var customerStore = storeRepository.findStoreByUserId(request.getUserId());
 
+        if(customerStore == null){
+            throw new UserNotFoundException("Store belonging to that customer not found");
+        }
         Product product = modelMapper.map(request, Product.class);
         product.setPrice(BigDecimal.valueOf(request.getPrice()));
         var savedProduct = productRepository.save(product);
-        elasticsearchOperations.save(product);
+//        elasticsearchOperations.save(product);
         customerStore.getProducts().add(savedProduct);
         storeRepository.save(customerStore);
         return savedProduct;
     }
 
     @Override
-    public void deleteProduct(Long productId) throws ProductNotFoundException {
+    public void deleteProduct(String productId) throws ProductNotFoundException {
         var product = getProduct(productId);
         productRepository.delete(product);
         elasticsearchOperations.delete(product);
     }
 
     @Override
-    public Product getProduct(Long productId) throws ProductNotFoundException {
+    public Product getProduct(String productId) throws ProductNotFoundException {
         var product =  productRepository.findProductById(productId);
         if (product == null) {
             throw new ProductNotFoundException("Product not found");

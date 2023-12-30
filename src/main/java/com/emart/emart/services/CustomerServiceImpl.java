@@ -60,7 +60,7 @@ public class CustomerServiceImpl implements CustomerService {
         }
     }
 
-    public Customer getCustomerById(Long id) throws UserNotFoundException {
+    public Customer getCustomerById(String id) throws UserNotFoundException {
         var customer =  customerRepository.findCustomerById(id);
         if(customer == null){
             throw new UserNotFoundException("User not found");

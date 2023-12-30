@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 @Setter @Getter @Builder
 @AllArgsConstructor @NoArgsConstructor
 public class CreateProductRequest {
-    private Long userId;
+    private String userId;
     private String name;
     private String description;
     private Long price;
